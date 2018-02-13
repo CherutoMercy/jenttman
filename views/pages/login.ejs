@@ -1,4 +1,4 @@
-<% layout('pages/indexlayout') -%>
+<% layout('pages/navlayout') -%>
 <!--content-->
 <div class=" container">
 <div class=" login">
@@ -13,25 +13,24 @@
                 <p><%= message[i] %></p>
               <% } %>
             <% } %>
-				     <div class="col-md-6 register-bottom-grid">
+				     <div class="col-md-6 col-md-offset-3 register-bottom-grid">
 						<h3><b>Login information</b></h3>
 						    <div class="form-group">
-  							<label for="usr">Username:</label>
-  							<input type="text" class="form-control" id="usr">
+  							<label for="usr">Username *</label>
+  							<input type="text" class="form-control" id="usr" required="required">
 							</div>
 							<div class="form-group">
-  						<label for="pwd">Password:</label>
-  					<input type="password" class="form-control" id="pwd">
+  						<label for="pwd">Password *</label>
+  					<input type="password" class="form-control" id="pwd" required="required">
 				</div>
                <div>
                <a class="news-letter" href="#">
 						 <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i>Sign Up for Newsletter</label>
 					   </a>
                </div>
-							 <input type="submit" value="submit">
+							 <a class="btn btn-primary" href=""> Submit </a>
 					 </div>
 					 </form>
-
 					 <div class="clearfix"> </div>
 			</div>
 </div>

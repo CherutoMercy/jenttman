@@ -26,6 +26,7 @@ order : function(req, res){
 
   billing : function(req, res,next){
         User.findOne({username:req.body.username}, function(err, foundUser){
+          console.log(req.body);
           if(err) res.send(err);
 
           var user      = new User();
@@ -40,6 +41,7 @@ order : function(req, res){
           user.postalcode  = req.body.postalcode;
 
           console.log("orders at this stage", user);
+          req.session.email = req.body.email;
 
           user.save(function(err, user){
             if(err) res.send(err);
@@ -55,7 +57,7 @@ order : function(req, res){
     Fashion.find({}, function(err, fashion){
       if(err) res.send(err);
       res.render('admin/order/new',{
-          fashion:fashion
+          product:product
       });
     });
   },

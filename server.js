@@ -23,10 +23,13 @@ var bcrypt = require('bcryptjs');
 var expressValidator = require('express-validator');
 var dotenv = require('dotenv');
 var paypal = require('paypal-rest-sdk');
+var google = require('googleapis');
+var OAuth2 = google.auth.OAuth2;
+var Storage = require('@google-cloud/storage');
+var format = require('util').format;
+var now = require('moment');
 
 var env = process.env.NODE_ENV || 'development';
-
-//dotenv.load();
 
 var db = require('./config/setting');
 var options = {
@@ -46,6 +49,8 @@ app.use('/category/uploads',  express.static(__dirname + '/uploads'));
 app.use(express.static(path.join(__dirname, 'views')));
 app.use('/uploads', express.static(__dirname + '/uploads'));
 app.use('/fashion/item/uploads', express.static(__dirname + '/uploads'));
+app.use('/admin/blog/uploads', express.static(__dirname + '/uploads'));
+app.use('/blog/item/',  express.static(__dirname + '/assets'));
 app.use('/admin/product/uploads', express.static('/uploads'));
 app.use('/fashion/cart/', express.static(__dirname + '/assets'));
 app.use('/pay/:id', express.static(__dirname + '/assets'));
@@ -95,5 +100,7 @@ app.use(routes);
 app.set('port', (process.env.PORT || 8080));
 app.listen(app.get('port'), function() {
   console.log("connected to mongo ", db.getDB(env));
-  console.log('Hurray am running on port ' + app.get('port'))
+  console.log('Hurray am running on port ' + app.get('port'));
+  console.log("running nodemailer on email ", db.getEmail(env));
+  console.log("running nodemailer on email password ", db.getPassword(env));
 });

@@ -2,4 +2,8 @@ node_modules
 jspm_packages
 bower_components
 .env
+uploads
+config/database.js
+bloguploads
+.gitignore
 

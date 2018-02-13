@@ -6,6 +6,13 @@ var Fashion  = require('../models/fashion');
 var User     = require('../models/user');
 var Category = require('../models/category');
 var Size     = require('../models/size');
+var cloudinary = require('cloudinary');
+
+cloudinary.config({
+  cloud_name:'dnkogjr1e',
+  api_key:'974522753437211',
+  api_secret:'5x4pOckiVKgAWqZmWiFxCp6LD_c'
+});
 
 module.exports = {
   //route to view template with fashions already in the system
@@ -90,24 +97,29 @@ module.exports = {
           if(err) res.send(err);
 
           console.log(foundCategory);
-          //console.log(user);
 
-          var fashion      = new Fashion();
-          fashion.name     = req.body.name;
-          fashion.category = foundCategory._id;
-          fashion.brand    = req.body.brand;
-          fashion.price    = req.body.price;
-          fashion.desc = req.body.desc;
-          fashion.photo = req.file.path;
-          //fashion.slug  = req.params.slug;
-          //fashion.user     = req.body._id;
-        
-          console.log("fashion at this stage", fashion);
-         
-          fashion.save(function(err, fashion){
-            if(err) res.send(err);
+          cloudinary.uploader.upload(req.file.path, function(result){
+            console.log(result);
 
-            res.redirect('/admin/fashions');
+            var fashion      = new Fashion();
+            fashion.name     = req.body.name;
+            fashion.category = foundCategory._id;
+            fashion.brand    = req.body.brand;
+            fashion.price    = req.body.price;
+            fashion.trending = req.body.trending;
+            fashion.photo    = result.url;
+            //fashion.photo  = req.files.path;
+            //fashion.photo  = publicUrl;
+            //fashion.slug   = req.params.slug;
+            //fashion.user   = req.body._id;
+          
+            console.log("fashion at this stage", fashion);
+           
+            fashion.save(function(err, fashion){
+              if(err) res.send(err);
+
+              res.redirect('/admin/fashions');
+            });
           });
         });
       }
@@ -131,7 +143,10 @@ module.exports = {
         size.save(function(err, size){
           if(err) res.send(err);
 
-          res.send("size added successfully");
+          foundFashion.instock = 'true';
+          foundFashion.save(function(err, fashion){
+            res.send("size added successfully");
+          });
         });
       }
       else{
@@ -177,6 +192,7 @@ module.exports = {
       if(req.body.desc) fashion.desc   = req.body.desc;
       if(req.body.brand) fashion.brand = req.body.brand;
       if(req.body.price) fashion.price = req.body.price;
+      if(req.body.trending) fashion.trending = req.body.trending;
 
       fashion.save(function(err, fashion){
         if(err) return next(err);
@@ -186,15 +202,17 @@ module.exports = {
   },
 
   updateimage : function(req, res, next){
-    console.log(req.file);
     Fashion.findOne({_id:req.body.fashionid}, function(err, fashion){
-      console.log(fashion);
+      console.log(req.file);
       if(err) return next(err);
 
-      fashion.photo = req.file.path;
-      fashion.save(function(err, fashion){
-        if(err) return next(err);
-        res.redirect('/admin/fashions');
+      cloudinary.uploader.upload(req.file.path, function(result){
+        fashion.photo = result.url;
+        //fashion.photo = req.file.path;
+        fashion.save(function(err, fashion){
+          if(err) return next(err);
+          res.redirect('/admin/fashions');
+        });
       });
     });
   }
